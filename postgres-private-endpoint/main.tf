@@ -1,4 +1,6 @@
-# https://www.terraform.io/docs/providers/azurerm/r/postgresql_server.html
+#
+# Postgres test Private Endpoint
+#
 
 provider "azurerm" {
   features {}
@@ -76,6 +78,18 @@ resource "azurerm_public_ip" "pip" {
     GLOBAL-Tribe       = "A841"
   }
 }
+
+## resource "azurerm_firewall" "test_fw" {
+##   name                = "testfirewall"
+##   location            = var.location
+##   resource_group_name = "${var.prefix}-net-rg"
+##
+##   ip_configuration {
+##     name                 = "configuration"
+##     subnet_id            = azurerm_subnet.internal.id
+##     public_ip_address_id = azurerm_public_ip.pip.id
+##   }
+## }
 
 resource "azurerm_network_interface" "main" {
   name                = "${var.prefix}-nic"
@@ -217,6 +231,7 @@ resource "azurerm_private_endpoint" "pe" {
   }
 }
 
+# postgres db
 resource "azurerm_postgresql_database" "db" {
   name                = "azuretest"
   resource_group_name = "${var.prefix}-datasql-rg"
@@ -225,7 +240,7 @@ resource "azurerm_postgresql_database" "db" {
   collation           = "English_United States.1252"
 }
 
-// Azure pgAudit
+# Azure pgAudit
 resource "azurerm_postgresql_configuration" "example" {
   name                = "shared_preload_libraries"
   resource_group_name = "${var.prefix}-datasql-rg"
