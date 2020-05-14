@@ -24,7 +24,7 @@ resource "azurerm_subnet" "internal" {
   name                                           = "${var.prefix}-subnet-service"
   resource_group_name                            = "${var.prefix}-net-rg"
   virtual_network_name                           = azurerm_virtual_network.vnet.name
-  address_prefix                                 = "10.0.1.0/24"
+  address_prefixes                                 = ["10.0.1.0/24"]
   enforce_private_link_endpoint_network_policies = true
   enforce_private_link_service_network_policies  = true
 }
@@ -34,7 +34,7 @@ resource "azurerm_subnet" "endpoint" {
   name                                           = "${var.prefix}-subnet-endpoint"
   resource_group_name                            = "${var.prefix}-net-rg"
   virtual_network_name                           = azurerm_virtual_network.vnet.name
-  address_prefix                                 = "10.0.2.0/24"
+  address_prefixes                                 = ["10.0.2.0/24"]
   enforce_private_link_endpoint_network_policies = true
   enforce_private_link_service_network_policies  = true
 }
@@ -241,7 +241,7 @@ resource "azurerm_postgresql_database" "db" {
 }
 
 # Azure pgAudit
-resource "azurerm_postgresql_configuration" "example" {
+resource "azurerm_postgresql_configuration" "shared_preload_libraries" {
   name                = "shared_preload_libraries"
   resource_group_name = "${var.prefix}-datasql-rg"
   server_name         = azurerm_postgresql_server.pg.name
@@ -249,9 +249,24 @@ resource "azurerm_postgresql_configuration" "example" {
 
   provisioner "local-exec" {
     command = <<EOC
-      az postgres server restart
-      --name ${azurerm_postgresql_server.pg.name}
-      --resource-group ${var.prefix}-net-rg
+      az postgres server restart \
+      --name ${azurerm_postgresql_server.pg.name} \
+      --resource-group ${var.prefix}-datasql-rg
+EOC
+  }
+}
+
+resource "azurerm_postgresql_configuration" "pgaudit_ddl" {
+  name                = "pgaudit.log"
+  resource_group_name = "${var.prefix}-datasql-rg"
+  server_name         = azurerm_postgresql_server.pg.name
+  value               = "DDL"
+
+  provisioner "local-exec" {
+    command = <<EOC
+      az postgres server restart \
+      --name ${azurerm_postgresql_server.pg.name} \
+      --resource-group ${var.prefix}-datasql-rg
 EOC
   }
 }
