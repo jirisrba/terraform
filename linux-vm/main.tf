@@ -1,18 +1,7 @@
-# terraform {
-#   backend "remote" {
-#     hostname = "app.terraform.io"
-#     organization = "operatorict"
-#
-#     workspaces {
-#       name = "portalprazana"
-#     }
-#   }
-# }
-
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = ">= 2.26"
     }
   }
@@ -21,6 +10,16 @@ terraform {
 
 provider "azurerm" {
   features {}
+}
+
+terraform {
+  backend "remote" {
+    organization = "operatorict"
+    #
+    workspaces {
+      name = "portalprazana"
+    }
+  }
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -45,15 +44,15 @@ resource "azurerm_network_security_group" "nsg" {
   resource_group_name = azurerm_resource_group.rg.name
 
   security_rule {
-    name                        = "ssh"
-    priority                    = "100"
-    direction                   = "Inbound"
-    access                      = "Allow"
-    protocol                    = "tcp"
-    source_port_range           = "*"
-    destination_port_range      = "22"
-    source_address_prefix       = "*"
-    destination_address_prefix  = "*"
+    name                       = "ssh"
+    priority                   = "100"
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 
   tags = {
@@ -82,32 +81,48 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-#resource "azurerm_linux_virtual_machine" "main" {
-#  name                            = "${var.prefix}-vm"
-#  resource_group_name             = "rg-complin-rg"
-#  location                        = var.location
-#  size                            = "Standard_F2"
-#  admin_username                  = "adminuser"
-#  admin_password                  = "P@ssw0rd1234!"
-#  disable_password_authentication = false
-#  network_interface_ids = [
-#    azurerm_network_interface.nic.id,
-#  ]
+#resource "azurerm_linux_virtual_machine" "vm" {
+#  name                            = "vm-${var.vm_name}-${var.environment}"
+#  resource_group_name             = azurerm_resource_group.rg.name
+#  location                        = azurerm_resource_group.rg.location
+#  vm_size                         = "Standard_B2s"
+#  network_interface_ids = [azurerm_network_interface.nic.id]
 #
 #  admin_ssh_key {
 #    username   = "adminuser"
 #    public_key = file("~/.ssh/id_rsa.pub")
 #  }
 #
-#  os_disk {
+#  storage_os_disk {
 #    caching              = "ReadWrite"
+#    create_option        = "FromImage"
 #    storage_account_type = "Standard_LRS"
 #  }
 #
-#  source_image_reference {
+#  storage_image_reference {
 #    publisher = "Canonical"
 #    offer     = "UbuntuServer"
 #    sku       = "16.04-LTS"
 #    version   = "latest"
 #  }
+#
+#  os_profile {
+#    computer_name  = "${var.vm_name}"
+#    admin_username = "azureuser"
+#    admin_password = "P@ssw0rd1234!"
+#  }
+#
+#  os_profile_linux_config {
+#    disable_password_authentication = false
+#  }
+#
+#  tags = {
+#    environment = var.environment
+#  }
 #}
+
+# data "azurerm_public_ip" "ip" {
+#   name                = azurerm_public_ip.publicip.name
+#   resource_group_name = azurerm_virtual_machine.vm.resource_group_name
+#   depends_on          = [azurerm_virtual_machine.vm]
+# }
