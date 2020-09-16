@@ -122,7 +122,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name             = "${var.prefix}-complin-rg"
   location                        = var.location
   size                            = "Standard_F2"
-  admin_username                  = "adminuser"
+  admin_username                  = "admin"
   admin_password                  = "P@ssw0rd1234!"
   disable_password_authentication = false
   network_interface_ids = [
@@ -130,7 +130,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   ]
 
   admin_ssh_key {
-    username   = "adminuser"
+    username   = "admin"
     public_key = file("~/.ssh/id_rsa.pub")
   }
 

@@ -13,6 +13,10 @@ variable "virtual_network_name" {
   default     = "spokeDevVnet"
 }
 
+variable "my_public_ip" {
+  default = "217.30.64.14"
+}
+
 variable "location" {
   type    = string
   default = "West Europe"
