@@ -10,15 +10,12 @@ add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(
 apt update
 apt install -y docker-ce
 
-# docker stack
-usermod -aG docker adminuser
-docker swarm init
-
 # Install docker-compose
-su adminuser -c "mkdir -p /home/adminuser/.local/bin"
-su adminuser -c "pip3 install docker-compose --upgrade --user && chmod 754 /home/adminuser/.local/bin/docker-compose"
+su - ubuntu -c "mkdir -p $HOME/.local/bin"
+su - ubuntu -c "pip3 install docker-compose --upgrade --user && chmod 754 $HOME/.local/bin/docker-compose"
+usermod -aG docker ubuntu
 
 # Add PATH
-printf "\nexport PATH=\$PATH:/home/adminuser/.local/bin\n" >/home/adminuser/.bashrc
+printf "\nexport PATH=\$PATH:$HOME/.local/bin\n" >$HOME/.bashrc
 
 exit 0

@@ -60,34 +60,20 @@ resource "azurerm_dev_test_linux_virtual_machine" "vm" {
   }
 }
 
-#resource "azurerm_linux_virtual_machine" "vm" {
-#  name                  = "vm-${var.vm_name}-${var.environment}"
-#  resource_group_name   = azurerm_resource_group.rg.name
-#  location              = azurerm_resource_group.rg.location
-#  size               = "Standard_B2s"
-#  admin_username      = "admin"
-#  network_interface_ids = [
-#    azurerm_network_interface.nic.id
-#    ]
+# resource "azurerm_virtual_machine_extension" "vme" {
+#   name                 = "hostname"
+#   virtual_machine_id   = azurerm_dev_test_linux_virtual_machine.vm.id
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.0"
 #
-#  admin_ssh_key {
-#    username   = "admin"
-#    public_key = file("~/.ssh/id_rsa.pub")
-#  }
+#   settings = <<SETTINGS
+#     {
+#         "commandToExecute": "hostname && uptime"
+#     }
+# SETTINGS
 #
-#  os_disk {
-#    caching              = "ReadWrite"
-#    storage_account_type = "Standard_LRS"
-#  }
-#
-#  source_image_reference {
-#    publisher = "Canonical"
-#    offer     = "0001-com-ubuntu-server-focal"
-#    sku       = "20_04-lts"
-#    version   = "latest"
-#  }
-#
-#  tags = {
-#    environment = var.environment
-#  }
-#}
+#   tags = {
+#     environment = "lab"
+#   }
+# }
