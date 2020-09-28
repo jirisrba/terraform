@@ -67,7 +67,7 @@ resource "azurerm_dev_test_schedule" "schedule" {
   lab_name            = azurerm_dev_test_lab.lab.name
 
   daily_recurrence {
-    time      = "1800"
+    time = "1800"
   }
 
   time_zone_id = "Central Europe Standard Time"
