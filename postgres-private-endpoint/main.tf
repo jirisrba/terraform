@@ -24,7 +24,7 @@ resource "azurerm_subnet" "internal" {
   name                                           = "${var.prefix}-subnet-service"
   resource_group_name                            = "${var.prefix}-net-rg"
   virtual_network_name                           = azurerm_virtual_network.vnet.name
-  address_prefixes                                 = ["10.0.1.0/24"]
+  address_prefixes                               = ["10.0.1.0/24"]
   enforce_private_link_endpoint_network_policies = true
   enforce_private_link_service_network_policies  = true
 }
@@ -34,7 +34,7 @@ resource "azurerm_subnet" "endpoint" {
   name                                           = "${var.prefix}-subnet-endpoint"
   resource_group_name                            = "${var.prefix}-net-rg"
   virtual_network_name                           = azurerm_virtual_network.vnet.name
-  address_prefixes                                 = ["10.0.2.0/24"]
+  address_prefixes                               = ["10.0.2.0/24"]
   enforce_private_link_endpoint_network_policies = true
   enforce_private_link_service_network_policies  = true
 }
