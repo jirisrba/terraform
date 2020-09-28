@@ -60,20 +60,19 @@ resource "azurerm_dev_test_linux_virtual_machine" "vm" {
   }
 }
 
-# resource "azurerm_virtual_machine_extension" "vme" {
-#   name                 = "hostname"
-#   virtual_machine_id   = azurerm_dev_test_linux_virtual_machine.vm.id
-#   publisher            = "Microsoft.Azure.Extensions"
-#   type                 = "CustomScript"
-#   type_handler_version = "2.0"
-#
-#   settings = <<SETTINGS
-#     {
-#         "commandToExecute": "hostname && uptime"
-#     }
-# SETTINGS
-#
-#   tags = {
-#     environment = "lab"
-#   }
-# }
+resource "azurerm_dev_test_schedule" "schedule" {
+  name                = "LabVmsShutdown"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  lab_name            = azurerm_dev_test_lab.lab.name
+
+  daily_recurrence {
+    time      = "1800"
+  }
+
+  time_zone_id = "Central Europe Standard Time"
+  task_type    = "LabVmsShutdownTask"
+
+  notification_settings {
+  }
+}
