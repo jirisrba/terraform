@@ -27,11 +27,11 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["172.16.195.0/28"]
 }
 
-resource "azurerm_availability_set" "as" {
-  name                = "AvailabilityProxy"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
+#resource "azurerm_availability_set" "as" {
+#  name                = "AvailabilityProxy"
+#  location            = azurerm_resource_group.rg.location
+#  resource_group_name = azurerm_resource_group.rg.name
+#}
 
 resource "azurerm_network_interface" "nic" {
   name                = "${var.vm_name}-nic"
@@ -54,7 +54,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-${var.vm_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  availability_set_id = azurerm_availability_set.as.id
+  #availability_set_id = azurerm_availability_set.as.id
   size                = "Standard_B1ms"
   admin_username      = "adminuser"
   network_interface_ids = [
